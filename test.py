@@ -70,6 +70,7 @@ def swn_polarity(text):
 
 
 def callback(recognizer, audio):
+    print("in callback")
     try:
         text = recognizer.recognize_google(audio)
         sentiment = swn_polarity(text)
@@ -78,7 +79,7 @@ def callback(recognizer, audio):
         elif sentiment < -0.5:
             print(colored(text, "red"))
         else:
-            print(colored(text, "grey"))
+            print(text)
     except sr.UnknownValueError:
         print("")
     except sr.RequestError as e:
@@ -87,7 +88,7 @@ def callback(recognizer, audio):
 
 # obtain audio from the microphone
 r = sr.Recognizer()
-m = sr.Microphone()
+m = sr.Microphone(device_index=2)
 
 r.listen_in_background(m, callback)
 
