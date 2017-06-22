@@ -104,11 +104,16 @@ log("SentiWordNet is go!")
 # obtain audio from the microphone
 log("initializing recognizer")
 r = sr.Recognizer()
+r.operation_timeout = 30
 log("initializing microphone")
-m = sr.Microphone()
+with sr.Microphone(chunk_size=512, device_index=2) as source:
+    r.adjust_for_ambient_noise(source)
 
 log("listening in background")
-r.listen_in_background(m, callback)
+r.listen_in_background(source, callback, phrase_time_limit = 30)
+
+while True:
+    time.sleep(0.1)
 
 log("finished")
 
