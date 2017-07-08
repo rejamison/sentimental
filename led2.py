@@ -10,13 +10,15 @@ client = opc.Client('localhost:7890')
 
 ROW_0_IDX = [0]
 ROW_1_IDX = [1,2,3,4,5,6,7,8]
-ROW_2_IDX = [16,15,14,13,12,11,10,9]
+ROW_2_IDX = [9,10,11,12,13,14,15,16]
+ROW_3_IDX = [17,18,19,20,21,22,23,24]
 
 ROW_0_VAL = [(0,0,0)]
 ROW_1_VAL = [(255,0,0),(255,127,0),(255,255,0),(127,255,0),(0,255,0),(0,255,127),(0,255,255),(0,127,255)]
 ROW_2_VAL = [(255,0,0),(255,127,0),(255,255,0),(127,255,0),(0,255,0),(0,255,127),(0,255,255),(0,127,255)]
+ROW_3_VAL = [(255,0,0),(255,127,0),(255,255,0),(127,255,0),(0,255,0),(0,255,127),(0,255,255),(0,127,255)]
 
-pixels = [(0,0,0)] * 17
+pixels = [(0,0,0)] * 25
 last_time = time.time()
 
 def get_rgb_for_hsv(h,s,v):
@@ -47,6 +49,7 @@ def spinning_rainbow():
 		hue = ((i * 45) + spinning_rainbow_hue_pos) % 360
 		ROW_1_VAL[i] = get_rgb_for_hsv(hue, 1.0, 1.0)
 		ROW_2_VAL[i] = get_rgb_for_hsv(hue, 1.0, 1.0)
+		ROW_3_VAL[i] = get_rgb_for_hsv(hue, 1.0, 1.0)
 	
 	spinning_rainbow_hue_pos += 2 
 	if spinning_rainbow_hue_pos >= 360:
@@ -62,6 +65,8 @@ while True:
 		pixels[ROW_1_IDX[i]] = ROW_1_VAL[i]
 	for i in range(len(ROW_2_IDX)):
 		pixels[ROW_2_IDX[i]] = ROW_2_VAL[i]
+	for i in range(len(ROW_3_IDX)):
+                pixels[ROW_3_IDX[i]] = ROW_3_VAL[i]
 	client.put_pixels(pixels)
 	
 	# run at 30 frames per second

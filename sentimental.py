@@ -110,7 +110,7 @@ with sr.Microphone(chunk_size=512, device_index=2) as source:
     r.adjust_for_ambient_noise(source)
 
 log("listening in background")
-r.listen_in_background(source, callback, phrase_time_limit = 30)
+r.listen_in_background(source, callback, phrase_time_limit = 15)
 
 while True:
     time.sleep(0.1)
