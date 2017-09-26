@@ -1,0 +1,15 @@
+{
+  "name": "sentimental",
+  "version": "1.0.0",
+  "description": "An LED globe that lights up based on sentiment.",
+  "main": "index.js",
+  "dependencies": {
+    "chalk": "^2.1.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Robert Jamison",
+  "license": "ISC"
+}

@@ -1,5 +1,7 @@
 .DS_Store
 .idea/
+node_modules/
+.gitconfig
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
