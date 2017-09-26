@@ -40,7 +40,6 @@ detector.on('hotword', function (index, hotword, buffer) {
 });
 
 const mic = record.start({
-  device: 'plughw:1',
   threshold: 0,
   verbose: true
 });
