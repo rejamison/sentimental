@@ -12,7 +12,7 @@ module exploded() {
     translate([48,15,55 + gap * 2]) nucleus();
     
     translate([48,15,55 - 2.5 + 104 + gap * 2]) {
-        %sphere(100);
+        %sphere(d=200);
         rotate([0,0,0]) translate([-5,-2.5,45 + gap]) mount();
         rotate([0,90,0]) translate([-5,-2.5,45 + gap]) mount();
         rotate([45,90,0]) translate([-5,-2.5,45 + gap]) mount();

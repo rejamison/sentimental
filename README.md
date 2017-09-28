@@ -2,14 +2,14 @@
 
 ## 3D Printing
 
-<img src="cad/sentimental.png" align="right" width="50%" />
-
 |Part|Count|
 |---|---|
 |[sentimental_base.stl](cad/sentimental_base.stl)|x1|
 |[sentimental_case.stl](cad/sentimental_case.stl)|x1|
 |[sentimental_nucleus.stl](cad/sentimental_nucleus.stl)|x1|
 |[sentimental_mounts.stl](cad/sentimental_mounts.stl)|x25|
+
+<img src="cad/sentimental.png" align="right" width="50%" />
 
 Printing notes:
 * Printed on my Ultimaker 2 printer using white Polymaker Polymax PLA.

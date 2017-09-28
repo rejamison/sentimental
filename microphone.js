@@ -1,47 +1,80 @@
-const record = require('node-record-lpcm16');
-const Detector = require('snowboy').Detector;
-const Models = require('snowboy').Models;
+var record = require('node-record-lpcm16');
+var snowboy = require('snowboy');
 
-const models = new Models();
+var MODE_SLEEPING = 0;
+var MODE_AWAKE = 1;
 
-models.add({
-  file: 'res/snowboy.umdl',
-  sensitivity: '0.5',
-  hotwords : 'snowboy'
-});
+function VoiceEngine() {
+    this.detector = null;
+    this.models = null;
+    this.mic = null;
+    this.utteranceBuffers = [];
+    this.mode = MODE_SLEEPING;
+    this.silenceCount = 0;
+}
+VoiceEngine.prototype.initialize = function () {
+    this.models = new snowboy.Models();
 
-const detector = new Detector({
-  resource: "res/common.res",
-  models: models,
-  audioGain: 2.0
-});
+    this.models.add({
+        file: 'res/snowboy.umdl',
+        sensitivity: '0.5',
+        hotwords: 'snowboy'
+    });
 
-detector.on('silence', function () {
-  console.log('silence');
-});
+    this.detector = new snowboy.Detector({
+        resource: "res/common.res",
+        models: this.models,
+        audioGain: 2.0
+    });
 
-detector.on('sound', function (buffer) {
-  // <buffer> contains the last chunk of the audio that triggers the "sound"
-  // event. It could be written to a wav stream.
-  console.log('sound');
-});
+    this.detector.on('silence', this.onSilence.bind(this));
+    this.detector.on('sound', this.onSound.bind(this));
+    this.detector.on('error', this.onError.bind(this));
+    this.detector.on('hotword', this.onHotword.bind(this));
+    this.detector.on('silence', this.onSilence.bind(this));
 
-detector.on('error', function () {
-  console.log('error');
-});
+    this.mic = record.start({
+        threshold: 0
+    });
 
-detector.on('hotword', function (index, hotword, buffer) {
-  // <buffer> contains the last chunk of the audio that triggers the "hotword"
-  // event. It could be written to a wav stream. You will have to use it
-  // together with the <buffer> in the "sound" event if you want to get audio
-  // data after the hotword.
-  console.log(buffer);
-  console.log('hotword', index, hotword);
-});
+    this.mic.pipe(this.detector);
 
-const mic = record.start({
-  threshold: 0,
-  verbose: true
-});
+}
+VoiceEngine.prototype.onSilence = function () {
+    if(this.mode === MODE_AWAKE) {
+        console.log('heard silence')
+        this.silenceCount++;
 
-mic.pipe(detector);
+        if(this.silenceCount > 10) {
+            console.log('done listening');
+            this.silenceCount = 0;
+            this.utteranceBuffers = [];
+            this.mode = MODE_SLEEPING;
+        }
+    } else if(this.mode === MODE_SLEEPING) {
+        // do nothing
+    }
+}
+VoiceEngine.prototype.onSound = function (buffer) {
+    if(this.mode === MODE_AWAKE) {
+        console.log('heard voices')
+        this.utteranceBuffers.push(buffer);
+    } else if(this.mode === MODE_SLEEPING) {
+        // do nothing
+    }
+}
+VoiceEngine.prototype.onHotword = function (index, hotword, buffer) {
+    if(this.mode === MODE_AWAKE) {
+        // do nothing
+    } else if(this.mode === MODE_SLEEPING) {
+        console.log('starting listening');
+        this.utteranceBuffers.push(buffer);
+        this.mode = MODE_AWAKE;
+    }
+}
+VoiceEngine.prototype.onError = function () {
+    console.log('error');
+}
+
+var ve = new VoiceEngine();
+ve.initialize();
