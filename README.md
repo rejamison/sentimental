@@ -9,7 +9,7 @@
 |[sentimental_mounts.stl](cad/sentimental_mounts.stl)|x25|10g|2 hours|
 |[sentimental_case.stl](cad/sentimental_case.stl)|x1|100g|15 hours|
 
-<img src="cad/sentimental.png" align="right" width="35%" />
+<img src="cad/sentimental.png" align="right" width="40%" />
 
 Printing notes:
 * Printed on my Ultimaker 2 printer using white Polymaker Polymax PLA.
