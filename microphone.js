@@ -1,5 +1,11 @@
-var record = require('node-record-lpcm16');
-var snowboy = require('snowboy');
+const record = require('node-record-lpcm16');
+const snowboy = require('snowboy');
+const Speaker = require('speaker');
+const Stream = require('stream');
+const AWS = require('aws-sdk');
+const log = require('winston');
+
+log.level = 'debug';
 
 var MODE_SLEEPING = 0;
 var MODE_AWAKE = 1;
@@ -11,14 +17,20 @@ function VoiceEngine() {
     this.utteranceBuffers = [];
     this.mode = MODE_SLEEPING;
     this.silenceCount = 0;
+    this.lastHotword = null;
 }
-VoiceEngine.prototype.initialize = function () {
+VoiceEngine.prototype.start = function () {
     this.models = new snowboy.Models();
 
     this.models.add({
         file: 'res/snowboy.umdl',
         sensitivity: '0.5',
         hotwords: 'snowboy'
+    });
+    this.models.add({
+        file: 'res/alexa.umdl',
+        sensitivity: '0.5',
+        hotwords: 'alexa'
     });
 
     this.detector = new snowboy.Detector({
@@ -42,11 +54,41 @@ VoiceEngine.prototype.initialize = function () {
 }
 VoiceEngine.prototype.onSilence = function () {
     if(this.mode === MODE_AWAKE) {
-        console.log('heard silence')
+        log.debug('heard silence');
         this.silenceCount++;
 
         if(this.silenceCount > 10) {
-            console.log('done listening');
+            log.debug('done listening after ' + this.lastHotword);
+
+            if(this.lastHotword === 'alexa') {
+                // var speaker = new Speaker({
+                //     channels: 1,
+                //     bitDepth: 16,
+                //     sampleRate: 16000,
+                //     signed: true
+                // });
+                // var stream = new Stream.PassThrough();
+                // stream.end(utteranceBuffer);
+                // stream.pipe(speaker);
+            } else if(this.lastHotword === 'snowboy') {
+                var utteranceBuffer = Buffer.concat(this.utteranceBuffers);
+                var lex = new AWS.LexRuntime({region: 'us-east-1'});
+                lex.postContent({
+                    botAlias: 'prod',
+                    botName: 'Sentimental',
+                    contentType: 'audio/l16; rate=16000; channels=1',
+                    inputStream: utteranceBuffer,
+                    userId: 'ME',
+                    accept: 'text/plain; charset=utf-8'
+                }, function(err, data) {
+                    if(err) {
+                        log.error("ERROR: " + err);
+                    } else {
+                        log.info(JSON.stringify(data));
+                    }
+                });
+            }
+
             this.silenceCount = 0;
             this.utteranceBuffers = [];
             this.mode = MODE_SLEEPING;
@@ -57,7 +99,7 @@ VoiceEngine.prototype.onSilence = function () {
 }
 VoiceEngine.prototype.onSound = function (buffer) {
     if(this.mode === MODE_AWAKE) {
-        console.log('heard voices')
+        log.debug('heard voices')
         this.utteranceBuffers.push(buffer);
     } else if(this.mode === MODE_SLEEPING) {
         // do nothing
@@ -67,14 +109,15 @@ VoiceEngine.prototype.onHotword = function (index, hotword, buffer) {
     if(this.mode === MODE_AWAKE) {
         // do nothing
     } else if(this.mode === MODE_SLEEPING) {
-        console.log('starting listening');
+        log.info('heard ' + hotword + ', starting listening');
         this.utteranceBuffers.push(buffer);
         this.mode = MODE_AWAKE;
+        this.lastHotword = hotword;
     }
 }
-VoiceEngine.prototype.onError = function () {
-    console.log('error');
+VoiceEngine.prototype.onError = function(err) {
+    log.error(err);
 }
 
 var ve = new VoiceEngine();
-ve.initialize();
+ve.start();
