@@ -5,9 +5,9 @@
 |Part|Count|Material|Print Time|
 |---|---|---|---|
 |[sentimental_base.stl](cad/sentimental_base.stl)|x1|20g|2 hours|
-|[sentimental_case.stl](cad/sentimental_case.stl)|x1|100g|15 hours|
 |[sentimental_nucleus.stl](cad/sentimental_nucleus.stl)|x1|30g|6 hours|
 |[sentimental_mounts.stl](cad/sentimental_mounts.stl)|x25|10g|2 hours|
+|[sentimental_case.stl](cad/sentimental_case.stl)|x1|100g|15 hours|
 
 <img src="cad/sentimental.png" align="right" width="30%" />
 
@@ -16,8 +16,12 @@ Printing notes:
 * No supports are required.
 * Printed with 50% infill and brim to avoid warping.
 * The case has a very large surface area touching the build plate.  Take appropriate measures (glue stick, painters tape, etc.)so that you can get it off.
-* The case is somewhat optional since those 
-* Before printing, you may want to check measurements for the barrel jack port, armature wire holes and LED mounts.  If you're careful, you can get everything to friction fit, but it depends on the tolerance of your printer.
+* The case is optional if you have another Pi case and don't mind the wires.
+* If you're careful, you can get everything to friction fit, but it depends on the tolerance of your printer and the specific parts you're using.  Before printing, you should check measurements for:
+    * barrel jack port (6mm)
+    * armature wire holes (3.5mm w/ 0.1mm tolerance)
+    * LED mounting holes (2mm holes, 8mm apart)
+    * globe bottom diameter (98.5mm)
 
 ## Assembly
 
