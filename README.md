@@ -2,20 +2,22 @@
 
 ## 3D Printing
 
-|Part|Count|
-|---|---|
-|[sentimental_base.stl](cad/sentimental_base.stl)|x1|
-|[sentimental_case.stl](cad/sentimental_case.stl)|x1|
-|[sentimental_nucleus.stl](cad/sentimental_nucleus.stl)|x1|
-|[sentimental_mounts.stl](cad/sentimental_mounts.stl)|x25|
+|Part|Count|Material|Print Time|
+|---|---|---|---|
+|[sentimental_base.stl](cad/sentimental_base.stl)|x1|20g|2 hours|
+|[sentimental_case.stl](cad/sentimental_case.stl)|x1|100g|15 hours|
+|[sentimental_nucleus.stl](cad/sentimental_nucleus.stl)|x1|30g|6 hours|
+|[sentimental_mounts.stl](cad/sentimental_mounts.stl)|x25|10g|2 hours|
 
-<img src="cad/sentimental.png" align="right" width="50%" />
+<img src="cad/sentimental.png" align="right" width="30%" />
 
 Printing notes:
 * Printed on my Ultimaker 2 printer using white Polymaker Polymax PLA.
 * No supports are required.
+* Printed with 50% infill and brim to avoid warping.
 * The case has a very large surface area touching the build plate.  Take appropriate measures (glue stick, painters tape, etc.)so that you can get it off.
-* Before printing, you may want to check measurements for the barrel jack port, armature wire holes and LED mounts.  If you're careful, you can get everything to friction fit, but it depends on the tolerance of your printer.  
+* The case is somewhat optional since those 
+* Before printing, you may want to check measurements for the barrel jack port, armature wire holes and LED mounts.  If you're careful, you can get everything to friction fit, but it depends on the tolerance of your printer.
 
 ## Assembly
 
