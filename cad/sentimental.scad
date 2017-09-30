@@ -1,6 +1,9 @@
 $fn = 100;
 
 screw_width = 2.5;
+BARREL_JACK_DIAMETER = 6;
+GLOBE_BASE_DIAMETER = 98.5;
+ARMATURE_WIRE_DIAMETER = 3.6;
 
 exploded();
 
@@ -43,12 +46,12 @@ module exploded() {
 
 module base() {
     difference() {
-        cylinder(h=7, d=103);
-        translate([0,0,4]) cylinder(h=5, d=98.5);
-        translate([0,0,-1]) cylinder(h=8, d=90);
+        cylinder(h=7, d=GLOBE_BASE_DIAMETER + 5);
+        translate([0,0,4]) cylinder(h=5, d=GLOBE_BASE_DIAMETER);
+        translate([0,0,-1]) cylinder(h=8, d=GLOBE_BASE_DIAMETER-8);
     }
-    translate([-2.5,-50,0]) cube([5,100,4]);
-    translate([-50,-2.5,0]) cube([100,5,4]);
+    translate([-2.5,-(GLOBE_BASE_DIAMETER + 3)/2,0]) cube([5,GLOBE_BASE_DIAMETER + 3,4]);
+    translate([-(GLOBE_BASE_DIAMETER + 3)/2,-2.5,0]) cube([GLOBE_BASE_DIAMETER + 3,5,4]);
     cylinder(h=11, d=8);
     cylinder(h=4, d=20);
 }
@@ -70,31 +73,31 @@ module nucleus() {
             translate([0,0,74]) cylinder(h=20, d1=10, d2=34);
             translate([0,0,4]) cylinder(h=10, d1=20, d2=10);
         }
-        translate([0,0,104]) rotate([0,0,0]) translate([0,0,10]) cylinder(d=3.6, h=25);
-        translate([0,0,104]) rotate([45,0,0]) translate([0,0,10]) cylinder(d=3.6, h=25);
-        translate([0,0,104]) rotate([45,0,45]) translate([0,0,10]) cylinder(d=3.6, h=25);
-        translate([0,0,104]) rotate([45,0,90]) translate([0,0,10]) cylinder(d=3.6, h=25);
-        translate([0,0,104]) rotate([45,0,135]) translate([0,0,10]) cylinder(d=3.6, h=25);
-        translate([0,0,104]) rotate([45,0,180]) translate([0,0,10]) cylinder(d=3.6, h=25);
-        translate([0,0,104]) rotate([45,0,225]) translate([0,0,10]) cylinder(d=3.6, h=25);
-        translate([0,0,104]) rotate([45,0,270]) translate([0,0,10]) cylinder(d=3.6, h=25);
-        translate([0,0,104]) rotate([45,0,315]) translate([0,0,10]) cylinder(d=3.6, h=25);
-        translate([0,0,104]) rotate([90,0,0]) translate([0,0,10]) cylinder(d=3.6, h=25);
-        translate([0,0,104]) rotate([90,0,45]) translate([0,0,10]) cylinder(d=3.6, h=25);
-        translate([0,0,104]) rotate([90,0,90]) translate([0,0,10]) cylinder(d=3.6, h=25);
-        translate([0,0,104]) rotate([90,0,135]) translate([0,0,10]) cylinder(d=3.6, h=25);
-        translate([0,0,104]) rotate([90,0,180]) translate([0,0,10]) cylinder(d=3.6, h=25);
-        translate([0,0,104]) rotate([90,0,225]) translate([0,0,10]) cylinder(d=3.6, h=25);
-        translate([0,0,104]) rotate([90,0,270]) translate([0,0,10]) cylinder(d=3.6, h=25);
-        translate([0,0,104]) rotate([90,0,315]) translate([0,0,10]) cylinder(d=3.6, h=25);
-        translate([0,0,104]) rotate([135,0,0]) translate([0,0,10]) cylinder(d=3.5, h=25);
-        translate([0,0,104]) rotate([135,0,45]) translate([0,0,10]) cylinder(d=3.5, h=25);
-        translate([0,0,104]) rotate([135,0,90]) translate([0,0,10]) cylinder(d=3.5, h=25);
-        translate([0,0,104]) rotate([135,0,135]) translate([0,0,10]) cylinder(d=3.5, h=25);
-        translate([0,0,104]) rotate([135,0,180]) translate([0,0,10]) cylinder(d=3.5, h=25);
-        translate([0,0,104]) rotate([135,0,225]) translate([0,0,10]) cylinder(d=3.5, h=25);
-        translate([0,0,104]) rotate([135,0,270]) translate([0,0,10]) cylinder(d=3.5, h=25);
-        translate([0,0,104]) rotate([135,0,315]) translate([0,0,10]) cylinder(d=3.5, h=25);
+        translate([0,0,104]) rotate([0,0,0]) translate([0,0,10]) cylinder(d=ARMATURE_WIRE_DIAMETER, h=25);
+        translate([0,0,104]) rotate([45,0,0]) translate([0,0,10]) cylinder(d=ARMATURE_WIRE_DIAMETER, h=25);
+        translate([0,0,104]) rotate([45,0,45]) translate([0,0,10]) cylinder(d=ARMATURE_WIRE_DIAMETER, h=25);
+        translate([0,0,104]) rotate([45,0,90]) translate([0,0,10]) cylinder(d=ARMATURE_WIRE_DIAMETER, h=25);
+        translate([0,0,104]) rotate([45,0,135]) translate([0,0,10]) cylinder(d=ARMATURE_WIRE_DIAMETER, h=25);
+        translate([0,0,104]) rotate([45,0,180]) translate([0,0,10]) cylinder(d=ARMATURE_WIRE_DIAMETER, h=25);
+        translate([0,0,104]) rotate([45,0,225]) translate([0,0,10]) cylinder(d=ARMATURE_WIRE_DIAMETER, h=25);
+        translate([0,0,104]) rotate([45,0,270]) translate([0,0,10]) cylinder(d=ARMATURE_WIRE_DIAMETER, h=25);
+        translate([0,0,104]) rotate([45,0,315]) translate([0,0,10]) cylinder(d=ARMATURE_WIRE_DIAMETER, h=25);
+        translate([0,0,104]) rotate([90,0,0]) translate([0,0,10]) cylinder(d=ARMATURE_WIRE_DIAMETER, h=25);
+        translate([0,0,104]) rotate([90,0,45]) translate([0,0,10]) cylinder(d=ARMATURE_WIRE_DIAMETER, h=25);
+        translate([0,0,104]) rotate([90,0,90]) translate([0,0,10]) cylinder(d=ARMATURE_WIRE_DIAMETER, h=25);
+        translate([0,0,104]) rotate([90,0,135]) translate([0,0,10]) cylinder(d=ARMATURE_WIRE_DIAMETER, h=25);
+        translate([0,0,104]) rotate([90,0,180]) translate([0,0,10]) cylinder(d=ARMATURE_WIRE_DIAMETER, h=25);
+        translate([0,0,104]) rotate([90,0,225]) translate([0,0,10]) cylinder(d=ARMATURE_WIRE_DIAMETER, h=25);
+        translate([0,0,104]) rotate([90,0,270]) translate([0,0,10]) cylinder(d=ARMATURE_WIRE_DIAMETER, h=25);
+        translate([0,0,104]) rotate([90,0,315]) translate([0,0,10]) cylinder(d=ARMATURE_WIRE_DIAMETER, h=25);
+        translate([0,0,104]) rotate([135,0,0]) translate([0,0,10]) cylinder(d=ARMATURE_WIRE_DIAMETER - .1, h=25);
+        translate([0,0,104]) rotate([135,0,45]) translate([0,0,10]) cylinder(d=ARMATURE_WIRE_DIAMETER - .1, h=25);
+        translate([0,0,104]) rotate([135,0,90]) translate([0,0,10]) cylinder(d=ARMATURE_WIRE_DIAMETER - .1, h=25);
+        translate([0,0,104]) rotate([135,0,135]) translate([0,0,10]) cylinder(d=ARMATURE_WIRE_DIAMETER - .1, h=25);
+        translate([0,0,104]) rotate([135,0,180]) translate([0,0,10]) cylinder(d=ARMATURE_WIRE_DIAMETER - .1, h=25);
+        translate([0,0,104]) rotate([135,0,225]) translate([0,0,10]) cylinder(d=ARMATURE_WIRE_DIAMETER - .1, h=25);
+        translate([0,0,104]) rotate([135,0,270]) translate([0,0,10]) cylinder(d=ARMATURE_WIRE_DIAMETER - .1, h=25);
+        translate([0,0,104]) rotate([135,0,315]) translate([0,0,10]) cylinder(d=ARMATURE_WIRE_DIAMETER - .1, h=25);
         cylinder(h=15, d=8.1);
     }
 }
@@ -105,14 +108,14 @@ module case() {
     //////////////////////////////////////////////////
     translate([48,15,0]) difference() {
         union() {
-            cylinder(h=60, d1=150, d2=105);
+            cylinder(h=60, d1=150, d2=GLOBE_BASE_DIAMETER + 8);
             translate([63,0,12]) rotate([0,69.5,0]) cylinder(h=7.5, d=20);
             //translate([63,-7.5,0]) cube([10,15,20]);
         }
-        translate([0,0,1]) cylinder(h=60, d1=146,d2=90);
-        translate([0,0,55]) cylinder(h=6, d=103.5);
+        translate([0,0,1]) cylinder(h=60, d1=146,d2=GLOBE_BASE_DIAMETER - 8);
+        translate([0,0,55]) cylinder(h=6, d=GLOBE_BASE_DIAMETER + 5);
         translate([61,0,12]) rotate([0,69.5,0]) cylinder(h=7.5, d=16);
-        translate([62,0,12]) rotate([0,69.5,0]) cylinder(h=100, d=6);
+        translate([62,0,12]) rotate([0,69.5,0]) cylinder(h=100, d=BARREL_JACK_DIAMETER);
         rotate([0,0,0]) translate([55,-0.5,27]) cube([20,1,25]);
         rotate([0,0,10]) translate([55,-0.5,27]) cube([20,1,25]);
         rotate([0,0,5]) translate([55,-0.5,27]) cube([20,1,25]);

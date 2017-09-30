@@ -18,7 +18,11 @@ function VoiceEngine() {
     this.mode = MODE_SLEEPING;
     this.silenceCount = 0;
     this.lastHotword = null;
+    this.intentHandlers = {};
 }
+VoiceEngine.prototype.addIntentHandler = function(intentName, handler) {
+    this.intentHandlers[intentName] = handler;
+};
 VoiceEngine.prototype.start = function () {
     this.models = new snowboy.Models();
 
@@ -51,7 +55,7 @@ VoiceEngine.prototype.start = function () {
 
     this.mic.pipe(this.detector);
 
-}
+};
 VoiceEngine.prototype.onSilence = function () {
     if(this.mode === MODE_AWAKE) {
         log.debug('heard silence');
@@ -73,6 +77,7 @@ VoiceEngine.prototype.onSilence = function () {
             } else if(this.lastHotword === 'snowboy') {
                 var utteranceBuffer = Buffer.concat(this.utteranceBuffers);
                 var lex = new AWS.LexRuntime({region: 'us-east-1'});
+                var that = this;
                 lex.postContent({
                     botAlias: 'prod',
                     botName: 'Sentimental',
@@ -85,6 +90,11 @@ VoiceEngine.prototype.onSilence = function () {
                         log.error("ERROR: " + err);
                     } else {
                         log.info(JSON.stringify(data));
+                        if(data.intentName in that.intentHandlers) {
+                            that.intentHandlers[data.intentName](data.slots);
+                        } else {
+                            log.debug("No intent handler found for: " + data.intentName)
+                        }
                     }
                 });
             }
@@ -96,15 +106,15 @@ VoiceEngine.prototype.onSilence = function () {
     } else if(this.mode === MODE_SLEEPING) {
         // do nothing
     }
-}
+};
 VoiceEngine.prototype.onSound = function (buffer) {
     if(this.mode === MODE_AWAKE) {
-        log.debug('heard voices')
+        log.debug('heard voices');
         this.utteranceBuffers.push(buffer);
     } else if(this.mode === MODE_SLEEPING) {
         // do nothing
     }
-}
+};
 VoiceEngine.prototype.onHotword = function (index, hotword, buffer) {
     if(this.mode === MODE_AWAKE) {
         // do nothing
@@ -114,10 +124,9 @@ VoiceEngine.prototype.onHotword = function (index, hotword, buffer) {
         this.mode = MODE_AWAKE;
         this.lastHotword = hotword;
     }
-}
+};
 VoiceEngine.prototype.onError = function(err) {
     log.error(err);
-}
+};
 
-var ve = new VoiceEngine();
-ve.start();
+module.exports = VoiceEngine;
