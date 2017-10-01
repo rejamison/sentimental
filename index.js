@@ -39,7 +39,7 @@ ve.addOnWakeUpHandler('snowboy', function() {
     canvas.setAnimation(new SnowboyWakeUpAnimation());
 });
 ve.addOnSleepHandler('snowboy', function() {
-    canvas.setAnimation(canvas.animations.Off);
+    canvas.setAnimation(canvas.animations.Off);w
 });
 ve.addOnWakeUpHandler('alexa', function() {
     canvas.setAnimation(new AlexaWakeUpAnimation());
@@ -60,11 +60,13 @@ function SnowboyWakeUpAnimation() {
         canvas.fillBuffer(new RGB(0,0,0));
         for(var x = 0; x < this.counter; x++) {
             for(var y = 0; y < canvas.height; y++) {
-                canvas.drawPixel(x, y, RGB.fromHSV(0,0,1));
-                canvas.drawPixel(canvas.width - x - 1, y, RGB.fromHSV(0,0,1));
+                canvas.drawPixel(x, y, RGB.fromHSV(0,0,0.5));
+                canvas.drawPixel(canvas.width - x - 1, y, RGB.fromHSV(0,0,0.5));
+                canvas.drawPixel(x - 1, y, RGB.fromHSV(0,0,1));
+                canvas.drawPixel(canvas.width - x, y, RGB.fromHSV(0,0,1));
             }
         }
-        if(this.counter < canvas.width - this.counter - 1) {
+        if(this.counter <= canvas.width - this.counter + 1) {
             this.counter++;
         }
     };
@@ -81,11 +83,13 @@ function AlexaWakeUpAnimation() {
         canvas.fillBuffer(new RGB(0,0,0));
         for(var x = 0; x < this.counter; x++) {
             for(var y = 0; y < canvas.height; y++) {
-                canvas.drawPixel(x, y, RGB.fromHSV(2/3,1,1));
-                canvas.drawPixel(canvas.width - x - 1, y, RGB.fromHSV(2/3,1,1));
+                canvas.drawPixel(x, y, RGB.fromHSV(2/3,1,0.5));
+                canvas.drawPixel(canvas.width - x - 1, y, RGB.fromHSV(2/3,1,0.5));
+                canvas.drawPixel(x - 1, y, RGB.fromHSV(2/3,1,1));
+                canvas.drawPixel(canvas.width - x, y, RGB.fromHSV(2/3,1,1));
             }
         }
-        if(this.counter < canvas.width - this.counter - 1) {
+        if(this.counter < canvas.width - this.counter + 1) {
             this.counter++;
         }
     };
