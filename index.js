@@ -2,6 +2,7 @@ var process = require('process');
 var VoiceEngine = require('./voiceengine');
 var Canvas = require('./ledcanvas');
 var log = require('winston');
+var RGB = require('./rgb')
 
 var shouldFadeCandy = true;
 var shouldConsole = false;
@@ -34,4 +35,58 @@ ve.addIntentHandler('ShowMeIntent', function(slots) {
         canvas.switchToAnimation(slots.animationName);
     }
 });
+ve.addOnWakeUpHandler('snowboy', function() {
+    canvas.setAnimation(new SnowboyWakeUpAnimation());
+});
+ve.addOnSleepHandler('snowboy', function() {
+    canvas.setAnimation(canvas.animations.Off);
+});
+ve.addOnWakeUpHandler('alexa', function() {
+    canvas.setAnimation(new AlexaWakeUpAnimation());
+});
+ve.addOnSleepHandler('alexa', function() {
+    canvas.setAnimation(canvas.animations.Off);
+});
 ve.start();
+
+function SnowboyWakeUpAnimation() {
+    this.counter = 0;
+
+    this.initialize = function(canvas) {
+        canvas.fillBuffer(new RGB(0,0,0));
+    };
+
+    this.update = function(canvas) {
+        canvas.fillBuffer(new RGB(0,0,0));
+        for(var x = 0; x < this.counter; x++) {
+            for(var y = 0; y < canvas.height; y++) {
+                canvas.drawPixel(x, y, RGB.fromHSV(0,0,1));
+                canvas.drawPixel(canvas.width - x - 1, y, RGB.fromHSV(0,0,1));
+            }
+        }
+        if(this.counter < canvas.width - this.counter - 1) {
+            this.counter++;
+        }
+    };
+}
+
+function AlexaWakeUpAnimation() {
+    this.counter = 0;
+
+    this.initialize = function(canvas) {
+        canvas.fillBuffer(new RGB(0,0,0));
+    };
+
+    this.update = function(canvas) {
+        canvas.fillBuffer(new RGB(0,0,0));
+        for(var x = 0; x < this.counter; x++) {
+            for(var y = 0; y < canvas.height; y++) {
+                canvas.drawPixel(x, y, RGB.fromHSV(2/3,1,1));
+                canvas.drawPixel(canvas.width - x - 1, y, RGB.fromHSV(2/3,1,1));
+            }
+        }
+        if(this.counter < canvas.width - this.counter - 1) {
+            this.counter++;
+        }
+    };
+}

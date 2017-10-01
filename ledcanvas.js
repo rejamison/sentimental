@@ -17,7 +17,7 @@ function LEDCanvas(hostname, port, renderToConsole, renderToFadeCandy, frameRate
     this.shouldFadeCandy = renderToFadeCandy ? true : false;
     this.animations = {};
     this.opcclient = new OPC(hostname, port);
-    this.frameRate = frameRate ? frameRate : 8;
+    this.frameRate = frameRate ? frameRate : 12;
 }
 
 LEDCanvas.prototype.initialize = function() {
@@ -48,13 +48,20 @@ LEDCanvas.prototype.initialize = function() {
 };
 
 LEDCanvas.prototype.switchToAnimation = function (animationName) {
-    if(animationName in animations) {
+    if(animationName in this.animations) {
         this.animation = this.animations[animationName];
         this.animation.initialize(this);
     } else {
         log.debug("Couldn't find animation with name: " + animationName);
     }
 };
+
+LEDCanvas.prototype.setAnimation = function(animation) {
+    this.animation = animation;
+    if(this.animation) {
+        this.animation.initialize(this);
+    }
+}
 
 LEDCanvas.prototype.run = function () {
     this.oneFrame();
@@ -119,7 +126,9 @@ LEDCanvas.prototype.drawSprite = function (frames, frameIndex, width, xOffset, y
 
 LEDCanvas.prototype.oneFrame = function () {
     // update the animation
-    this.animation.update(this);
+    if(this.animation) {
+        this.animation.update(this);
+    }
 
     // draw the pixels
     if (this.shouldFadeCandy) {

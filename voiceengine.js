@@ -19,11 +19,23 @@ function VoiceEngine() {
     this.silenceCount = 0;
     this.lastHotword = null;
     this.intentHandlers = {};
+    this.readStream = null;
+    this.lex = null;
+    this.onWakeUpHandlers = {};
+    this.onSleepHandlers = {};
 }
 VoiceEngine.prototype.addIntentHandler = function(intentName, handler) {
     this.intentHandlers[intentName] = handler;
 };
+VoiceEngine.prototype.addOnWakeUpHandler = function(hotword, handler) {
+    this.onWakeUpHandlers[hotword] = handler;
+};
+VoiceEngine.prototype.addOnSleepHandler = function(hotword, handler) {
+    this.onSleepHandlers[hotword] = handler;
+};
 VoiceEngine.prototype.start = function () {
+    this.lex = new AWS.LexRuntime({region: 'us-east-1'});
+
     this.models = new snowboy.Models();
 
     this.models.add({
@@ -65,6 +77,7 @@ VoiceEngine.prototype.onSilence = function () {
             log.debug('done listening after ' + this.lastHotword);
 
             if(this.lastHotword === 'alexa') {
+                // var utteranceBuffer = Buffer.concat(this.utteranceBuffers);
                 // var speaker = new Speaker({
                 //     channels: 1,
                 //     bitDepth: 16,
@@ -75,33 +88,15 @@ VoiceEngine.prototype.onSilence = function () {
                 // stream.end(utteranceBuffer);
                 // stream.pipe(speaker);
             } else if(this.lastHotword === 'snowboy') {
-                var utteranceBuffer = Buffer.concat(this.utteranceBuffers);
-                var lex = new AWS.LexRuntime({region: 'us-east-1'});
-                var that = this;
-                lex.postContent({
-                    botAlias: 'prod',
-                    botName: 'Sentimental',
-                    contentType: 'audio/l16; rate=16000; channels=1',
-                    inputStream: utteranceBuffer,
-                    userId: 'ME',
-                    accept: 'text/plain; charset=utf-8'
-                }, function(err, data) {
-                    if(err) {
-                        log.error("ERROR: " + err);
-                    } else {
-                        log.info(JSON.stringify(data));
-                        if(data.intentName in that.intentHandlers) {
-                            that.intentHandlers[data.intentName](data.slots);
-                        } else {
-                            log.debug("No intent handler found for: " + data.intentName)
-                        }
-                    }
-                });
+                this.readStream.push(null);
             }
 
             this.silenceCount = 0;
             this.utteranceBuffers = [];
             this.mode = MODE_SLEEPING;
+            if(this.onSleepHandlers[this.lastHotword]) {
+                this.onSleepHandlers[this.lastHotword]();
+            }
         }
     } else if(this.mode === MODE_SLEEPING) {
         // do nothing
@@ -110,6 +105,7 @@ VoiceEngine.prototype.onSilence = function () {
 VoiceEngine.prototype.onSound = function (buffer) {
     if(this.mode === MODE_AWAKE) {
         log.debug('heard voices');
+        this.readStream.push(buffer);
         this.utteranceBuffers.push(buffer);
     } else if(this.mode === MODE_SLEEPING) {
         // do nothing
@@ -120,9 +116,36 @@ VoiceEngine.prototype.onHotword = function (index, hotword, buffer) {
         // do nothing
     } else if(this.mode === MODE_SLEEPING) {
         log.info('heard ' + hotword + ', starting listening');
-        this.utteranceBuffers.push(buffer);
         this.mode = MODE_AWAKE;
         this.lastHotword = hotword;
+        this.readStream = new Stream.Readable();
+        this.readStream._read = function() {};
+        this.readStream.push(buffer);
+        this.utteranceBuffers.push(buffer);
+        if(this.onWakeUpHandlers[this.lastHotword]) {
+            this.onWakeUpHandlers[this.lastHotword]();
+        }
+
+        var that = this;
+        this.lex.postContent({
+            botAlias: 'prod',
+            botName: 'Sentimental',
+            contentType: 'audio/l16; rate=16000; channels=1',
+            inputStream: this.readStream,
+            userId: 'ME',
+            accept: 'text/plain; charset=utf-8'
+        }, function(err, data) {
+            if(err) {
+                log.error("ERROR: " + err);
+            } else {
+                log.info(JSON.stringify(data));
+                if(data.intentName in that.intentHandlers) {
+                    that.intentHandlers[data.intentName](data.slots);
+                } else {
+                    log.debug("No intent handler found for: " + data.intentName)
+                }
+            }
+        });
     }
 };
 VoiceEngine.prototype.onError = function(err) {
