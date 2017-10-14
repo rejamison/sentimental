@@ -21,7 +21,7 @@ if(process.argv[2]) {
     }
 }
 
-var canvas = new Canvas('sentimental.local', 7890, shouldConsole, shouldFadeCandy);
+var canvas = new Canvas('sentimental.local', 7890, shouldConsole, shouldFadeCandy, 6);
 if(process.argv[3]) {
     canvas.switchToAnimation(process.argv[3]);
 }
@@ -39,7 +39,7 @@ ve.addOnWakeUpHandler('snowboy', function() {
     canvas.setAnimation(new SnowboyWakeUpAnimation());
 });
 ve.addOnSleepHandler('snowboy', function() {
-    canvas.setAnimation(canvas.animations.Off);w
+    canvas.setAnimation(canvas.animations.Off);
 });
 ve.addOnWakeUpHandler('alexa', function() {
     canvas.setAnimation(new AlexaWakeUpAnimation());

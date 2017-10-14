@@ -1,6 +1,6 @@
 const record = require('node-record-lpcm16');
 const snowboy = require('snowboy');
-const Speaker = require('speaker');
+//const Speaker = require('speaker');
 const Stream = require('stream');
 const AWS = require('aws-sdk');
 const log = require('winston');
@@ -10,6 +10,9 @@ log.level = 'debug';
 var MODE_SLEEPING = 0;
 var MODE_AWAKE = 1;
 
+var LISTEN_LIMIT = 10;
+var SILENCE_LIMIT = 7;
+
 function VoiceEngine() {
     this.detector = null;
     this.models = null;
@@ -17,6 +20,7 @@ function VoiceEngine() {
     this.utteranceBuffers = [];
     this.mode = MODE_SLEEPING;
     this.silenceCount = 0;
+    this.listenCount = 0;
     this.lastHotword = null;
     this.intentHandlers = {};
     this.readStream = null;
@@ -73,7 +77,7 @@ VoiceEngine.prototype.onSilence = function () {
         log.debug('heard silence');
         this.silenceCount++;
 
-        if(this.silenceCount > 10) {
+        if(this.silenceCount > SILENCE_LIMIT) {
             log.debug('done listening after ' + this.lastHotword);
 
             if(this.lastHotword === 'alexa') {
@@ -92,6 +96,7 @@ VoiceEngine.prototype.onSilence = function () {
             }
 
             this.silenceCount = 0;
+            this.listenCount = 0;
             this.utteranceBuffers = [];
             this.mode = MODE_SLEEPING;
             if(this.onSleepHandlers[this.lastHotword]) {
@@ -104,9 +109,37 @@ VoiceEngine.prototype.onSilence = function () {
 };
 VoiceEngine.prototype.onSound = function (buffer) {
     if(this.mode === MODE_AWAKE) {
-        log.debug('heard voices');
+        log.debug('heard voices (' + this.listenCount + ")");
         this.readStream.push(buffer);
         this.utteranceBuffers.push(buffer);
+
+        this.listenCount++;
+        if(this.listenCount > LISTEN_LIMIT) {
+          log.debug('done listening after ' + this.lastHotword);
+
+            if(this.lastHotword === 'alexa') {
+                // var utteranceBuffer = Buffer.concat(this.utteranceBuffers);
+                // var speaker = new Speaker({
+                //     channels: 1,
+                //     bitDepth: 16,
+                //     sampleRate: 16000,
+                //     signed: true
+                // });
+                // var stream = new Stream.PassThrough();
+                // stream.end(utteranceBuffer);
+                // stream.pipe(speaker);
+            } else if(this.lastHotword === 'snowboy') {
+                this.readStream.push(null);
+            }
+
+            this.silenceCount = 0;
+            this.listenCount = 0;
+            this.utteranceBuffers = [];
+            this.mode = MODE_SLEEPING;
+            if(this.onSleepHandlers[this.lastHotword]) {
+                this.onSleepHandlers[this.lastHotword]();
+            }  
+        }
     } else if(this.mode === MODE_SLEEPING) {
         // do nothing
     }
