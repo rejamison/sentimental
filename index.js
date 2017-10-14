@@ -35,6 +35,9 @@ ve.addIntentHandler('ShowMeIntent', function(slots) {
         canvas.switchToAnimation(slots.animationName);
     }
 });
+ve.addDefaultIntentHandler(function() {
+    // do nothing
+});
 ve.addOnWakeUpHandler('snowboy', function() {
     canvas.setAnimation(new SnowboyWakeUpAnimation());
 });

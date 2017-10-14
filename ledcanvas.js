@@ -19,7 +19,6 @@ function LEDCanvas(hostname, port, renderToConsole, renderToFadeCandy, frameRate
     this.opcclient = new OPC(hostname, port);
     this.frameRate = frameRate ? frameRate : 12;
 }
-
 LEDCanvas.prototype.initialize = function() {
     log.debug('Width: ' + this.width);
     log.debug('Height: ' + this.height);
@@ -46,7 +45,6 @@ LEDCanvas.prototype.initialize = function() {
     this.animation = this.animations.Random;
     this.animation.initialize(this);
 };
-
 LEDCanvas.prototype.switchToAnimation = function (animationName) {
     if(animationName in this.animations) {
         this.animation = this.animations[animationName];
@@ -55,18 +53,15 @@ LEDCanvas.prototype.switchToAnimation = function (animationName) {
         log.debug("Couldn't find animation with name: " + animationName);
     }
 };
-
 LEDCanvas.prototype.setAnimation = function(animation) {
     this.animation = animation;
     if(this.animation) {
         this.animation.initialize(this);
     }
 }
-
 LEDCanvas.prototype.run = function () {
     this.oneFrame();
 };
-
 LEDCanvas.prototype.pushToConsole = function () {
     var out = process.stdout;
     var rowCount = this.height;
@@ -80,7 +75,6 @@ LEDCanvas.prototype.pushToConsole = function () {
         out.write('\n');
     }
 };
-
 LEDCanvas.prototype.pushToFadeCandy = function () {
     var xOffset = 4;  // rotate the x axis around to a specific position (i.e., back of the hat)
     for (var y = 0; y < this.height; y++) {
@@ -141,7 +135,6 @@ LEDCanvas.prototype.oneFrame = function () {
     var millisToNextFrame = (1000 / this.frameRate) - (Date.now() % (1000 / this.frameRate));
     setTimeout(this.oneFrame.bind(this), millisToNextFrame);
 };
-
 module.exports = LEDCanvas;
 
 function Off() {

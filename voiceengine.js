@@ -10,8 +10,8 @@ log.level = 'debug';
 var MODE_SLEEPING = 0;
 var MODE_AWAKE = 1;
 
-var LISTEN_LIMIT = 10;
-var SILENCE_LIMIT = 7;
+var LISTEN_LIMIT_MS = 7000;
+var SILENCE_LIMIT_MS = 1500;
 
 function VoiceEngine() {
     this.detector = null;
@@ -19,10 +19,11 @@ function VoiceEngine() {
     this.mic = null;
     this.utteranceBuffers = [];
     this.mode = MODE_SLEEPING;
-    this.silenceCount = 0;
-    this.listenCount = 0;
+    this.silenceStartTime = 0;
+    this.listenStartTime = 0;
     this.lastHotword = null;
     this.intentHandlers = {};
+    this.defaultIntentHandler = null;
     this.readStream = null;
     this.lex = null;
     this.onWakeUpHandlers = {};
@@ -30,6 +31,9 @@ function VoiceEngine() {
 }
 VoiceEngine.prototype.addIntentHandler = function(intentName, handler) {
     this.intentHandlers[intentName] = handler;
+};
+VoiceEngine.prototype.addDefaultIntentHandler = function(handler) {
+    this.defaultIntentHandler = handler;
 };
 VoiceEngine.prototype.addOnWakeUpHandler = function(hotword, handler) {
     this.onWakeUpHandlers[hotword] = handler;
@@ -75,33 +79,9 @@ VoiceEngine.prototype.start = function () {
 VoiceEngine.prototype.onSilence = function () {
     if(this.mode === MODE_AWAKE) {
         log.debug('heard silence');
-        this.silenceCount++;
 
-        if(this.silenceCount > SILENCE_LIMIT) {
-            log.debug('done listening after ' + this.lastHotword);
-
-            if(this.lastHotword === 'alexa') {
-                // var utteranceBuffer = Buffer.concat(this.utteranceBuffers);
-                // var speaker = new Speaker({
-                //     channels: 1,
-                //     bitDepth: 16,
-                //     sampleRate: 16000,
-                //     signed: true
-                // });
-                // var stream = new Stream.PassThrough();
-                // stream.end(utteranceBuffer);
-                // stream.pipe(speaker);
-            } else if(this.lastHotword === 'snowboy') {
-                this.readStream.push(null);
-            }
-
-            this.silenceCount = 0;
-            this.listenCount = 0;
-            this.utteranceBuffers = [];
-            this.mode = MODE_SLEEPING;
-            if(this.onSleepHandlers[this.lastHotword]) {
-                this.onSleepHandlers[this.lastHotword]();
-            }
+        if((Date.now() - this.silenceStartTime) > SILENCE_LIMIT_MS) {
+            this.finalizeUtterance();
         }
     } else if(this.mode === MODE_SLEEPING) {
         // do nothing
@@ -109,36 +89,13 @@ VoiceEngine.prototype.onSilence = function () {
 };
 VoiceEngine.prototype.onSound = function (buffer) {
     if(this.mode === MODE_AWAKE) {
-        log.debug('heard voices (' + this.listenCount + ")");
+        log.debug("heard voices (" + (Date.now() - this.listenStartTime) + "ms)");
+        this.silenceStartTime = Date.now();
         this.readStream.push(buffer);
         this.utteranceBuffers.push(buffer);
 
-        this.listenCount++;
-        if(this.listenCount > LISTEN_LIMIT) {
-          log.debug('done listening after ' + this.lastHotword);
-
-            if(this.lastHotword === 'alexa') {
-                // var utteranceBuffer = Buffer.concat(this.utteranceBuffers);
-                // var speaker = new Speaker({
-                //     channels: 1,
-                //     bitDepth: 16,
-                //     sampleRate: 16000,
-                //     signed: true
-                // });
-                // var stream = new Stream.PassThrough();
-                // stream.end(utteranceBuffer);
-                // stream.pipe(speaker);
-            } else if(this.lastHotword === 'snowboy') {
-                this.readStream.push(null);
-            }
-
-            this.silenceCount = 0;
-            this.listenCount = 0;
-            this.utteranceBuffers = [];
-            this.mode = MODE_SLEEPING;
-            if(this.onSleepHandlers[this.lastHotword]) {
-                this.onSleepHandlers[this.lastHotword]();
-            }  
+        if((Date.now() - this.listenStartTime) > LISTEN_LIMIT_MS) {
+            this.finalizeUtterance()
         }
     } else if(this.mode === MODE_SLEEPING) {
         // do nothing
@@ -151,6 +108,8 @@ VoiceEngine.prototype.onHotword = function (index, hotword, buffer) {
         log.info('heard ' + hotword + ', starting listening');
         this.mode = MODE_AWAKE;
         this.lastHotword = hotword;
+        this.listenStartTime = Date.now();
+        this.silenceStartTime = Date.now();
         this.readStream = new Stream.Readable();
         this.readStream._read = function() {};
         this.readStream.push(buffer);
@@ -175,7 +134,11 @@ VoiceEngine.prototype.onHotword = function (index, hotword, buffer) {
                 if(data.intentName in that.intentHandlers) {
                     that.intentHandlers[data.intentName](data.slots);
                 } else {
-                    log.debug("No intent handler found for: " + data.intentName)
+                    if(that.defaultIntentHandler) {
+                        that.defaultIntentHandler();
+                    } else {
+                        log.debug("No intent handler found for: " + data.intentName);
+                    }
                 }
             }
         });
@@ -183,6 +146,32 @@ VoiceEngine.prototype.onHotword = function (index, hotword, buffer) {
 };
 VoiceEngine.prototype.onError = function(err) {
     log.error(err);
+};
+VoiceEngine.prototype.finalizeUtterance = function() {
+    log.debug('done listening after ' + this.lastHotword);
+
+    if(this.lastHotword === 'alexa') {
+        // var utteranceBuffer = Buffer.concat(this.utteranceBuffers);
+        // var speaker = new Speaker({
+        //     channels: 1,
+        //     bitDepth: 16,
+        //     sampleRate: 16000,
+        //     signed: true
+        // });
+        // var stream = new Stream.PassThrough();
+        // stream.end(utteranceBuffer);
+        // stream.pipe(speaker);
+    } else if(this.lastHotword === 'snowboy') {
+        this.readStream.push(null);
+    }
+
+    this.silenceStartTime = 0;
+    this.listenStartTime = 0;
+    this.utteranceBuffers = [];
+    this.mode = MODE_SLEEPING;
+    if(this.onSleepHandlers[this.lastHotword]) {
+        this.onSleepHandlers[this.lastHotword]();
+    }
 };
 
 module.exports = VoiceEngine;
