@@ -70,7 +70,9 @@ VoiceEngine.prototype.start = function () {
     this.detector.on('silence', this.onSilence.bind(this));
 
     this.mic = record.start({
-        threshold: 0
+        threshold: 0,
+        recordProgram: 'arecord',
+        verbose: false
     });
 
     this.mic.pipe(this.detector);
