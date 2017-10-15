@@ -8,6 +8,7 @@
 |[sentimental_nucleus.stl](cad/sentimental_nucleus.stl)|x1|30g|6 hours|
 |[sentimental_mounts.stl](cad/sentimental_mounts.stl)|x25|10g|2 hours|
 |[sentimental_case.stl](cad/sentimental_case.stl)|x1|100g|15 hours|
+|**Total**| |**160g**|**25 hours**|
 
 <img src="cad/sentimental.png" align="right" width="40%" />
 
@@ -22,10 +23,12 @@ Printing notes:
     * armature wire holes (3.5mm w/ 0.1mm tolerance)
     * LED mounting holes (2mm holes, 8mm apart)
     * globe bottom diameter (98.5mm)
+* If anything measures out differently, then use OpenSCAD to adjust the models.
 
 ## Assembly
 
 ## Installing the Software
+
 1.  Update the Pi
     ````bash
     sudo apt-get update
@@ -64,7 +67,7 @@ Printing notes:
         vi ~/asound.rc
         ````
 
-        With the content:
+        With the content below, replacing `card 1` with the correct ID for your USB sound card.:
         
         ````
         pcm.!default {
@@ -77,41 +80,82 @@ Printing notes:
             card 1
         }
         ````
+        
+    1.  Hook up your mic and some speakers or a headphone.  Test out the mic using:
+    
+        ````bash
+        arecord -d 10 /tmp/out.wav
+        ````
+        
+        It should start recording and you'll need to press control-c to stop.  Listen to the file you created:
+        
+        ````bash
+        aplay /tmp/out.wav
+        ````
+        
+        If you run into any issues, it's most likely that your USB sound card isn't set properly as the default.
 
-1.  Install the Sentimental Project
+1.  Install the Sentimental project:
+
     ````bash
     git clone git@github.com:rejamison/sentimental.git
     cd sentimental
     npm install
     ````
+    
+1.  Install AWS CLI and configure account keys.
+
+    TBD
+
+1.  Deploy the Lex Bot.
+
+    TBD
 
 1.  Run the Project
+
     ````bash
     node index.js
     ````
     
+    The LEDs should light up, and you should be able to use voice commands like:
+    
+        "Snowboy, switch to Rainbow."
+
 ## Bill of Materials
 
-|Tools|
+|Basic Tools & Materials|
 |---|
 |Soldering Iron and Solder|
 |Wire Strippers|
-|Lots of Small Wire Segments|
+|Lots of Wire|
 |CA Glue|
+|Heat-Shrink Wire Wrap and Heat Gun (Optional)|
+|Matte Clear-Coat (Optional)|
 
 |Item|Count|Unit Price|Total|Link|Notes|
 |---|---|---|---|---|---|
-|Raspberry Pi 3|1|$35|$35|[Amazon](https://www.amazon.com/Raspberry-Model-1-2GHz-64-bit-quad-core/dp/B01CD5VC92/ref=sr_1_4?s=pc&ie=UTF8&qid=1506478376&sr=1-4&keywords=raspberry+pi+2)|We actually used a Pi 2, but using a 3 will save having to get a separate wifi adapter.|
-|FadeCandy|1|$24|$24|[Amazon](https://www.amazon.com/Adafruit-FadeCandy-Dithering-USB-Controlled-NeoPixels/dp/B00JHJJF9W/ref=sr_1_1?s=electronics&ie=UTF8&qid=1506478498&sr=1-1&keywords=fadecandy)||
-|6-Inch Micro USB Cable|1|$3|$3|[Amazon](https://www.amazon.com/StarTech-com-USB2HABM6IN-6-Inch-Mini-Cable/dp/B003WV5DME/ref=sr_1_13?s=electronics&ie=UTF8&qid=1506478537&sr=1-13&keywords=mini+usb+cable+3+inch)||
+|Raspberry Pi 3|1|$35|$35|[Adafruit](https://www.adafruit.com/product/3055)|We actually used a Pi 2, but using a 3 will save having to get a separate wifi adapter and give a little more processing horsepower as the Pi2 is about at capacity.|
+|FadeCandy|1|$25|$25|[Adafruit](https://www.adafruit.com/product/1689)||
+|Electret Mic w/ Amp|1|$7|$7|[Adafruit](https://www.adafruit.com/product/1063)||
+|USB Sound Card|1|$7|$7|[Amazon](https://www.amazon.com/Sabrent-External-Adapter-Windows-AU-MMSA/dp/B00IRVQ0F8/ref=sr_1_4?s=electronics&ie=UTF8&qid=1508040167&sr=1-4&keywords=usb+sound+card)|We tried one of [these](https://www.adafruit.com/product/1475) but found it had a lot of noise.
 |RGB LEDs|25|$2|$50|[Adafruit](https://www.adafruit.com/product/1312)|We used these because we had them on-hand, but you might try something like these which are $0.18 / LED: [Amazon](https://www.amazon.com/kuman-WS2812B-Addressable-Arduino-littlergb/dp/B01M5BEO1C/ref=sr_1_9?ie=UTF8&qid=1506478929&sr=8-9&keywords=rgb+led+pcb+ws2812b)|
-|5V 2.5A Power Supply|1|$9|$9|[Amazon](https://www.amazon.com/Super-Power-Supply%C2%AE-Certified-5-5x2-5mm/dp/B00DHRSMBW/ref=sr_1_20?s=electronics&ie=UTF8&qid=1506479459&sr=1-20&keywords=2.5a+5.5mm)||
-|5.5mm Panel Mount Barrel Jack|1|$2|$2|[Amazon](https://www.amazon.com/CESS-4-Pack-Socket-Female-Connector/dp/B01GBT9N0G/ref=pd_sbs_23_2?_encoding=UTF8&pd_rd_i=B01GBT9N0G&pd_rd_r=15TR9JVFMFPMCEHXHHH6&pd_rd_w=B8GTL&pd_rd_wg=rihfR&psc=1&refRID=15TR9JVFMFPMCEHXHHH6)||
+|6-Inch Micro USB Cable|1|$3|$3|[Amazon](https://www.amazon.com/StarTech-com-USB2HABM6IN-6-Inch-Mini-Cable/dp/B003WV5DME/ref=sr_1_13?s=electronics&ie=UTF8&qid=1506478537&sr=1-13&keywords=mini+usb+cable+3+inch)||
+|Left-Angle Male-to-Female USB|2|$4|$8|[Amazon](https://www.amazon.com/gp/product/B06VWQN2CK/ref=oh_aui_search_detailpage?ie=UTF8&psc=1)|The large USB sound card and the chunky cable for the FadeCandy required us to get these to get everything to fit nicely into the case.|
+|5V 2.5A Power Supply|1|$9|$9|[Amazon](https://www.amazon.com/Super-Power-Supply%C2%AE-Certified-5-5x2-5mm/dp/B00DHRSMBW/ref=sr_1_20?s=electronics&ie=UTF8&qid=1506479459&sr=1-20&keywords=2.5a+5.5mm)|2.5A is important, vs. the more common 2A adapters, as you need the extra amperage to run the LEDs.|
+|5.5mm Panel Mount Female Barrel Jack|1|$2|$2|[Amazon](https://www.amazon.com/CESS-4-Pack-Socket-Female-Connector/dp/B01GBT9N0G/ref=pd_sbs_23_2?_encoding=UTF8&pd_rd_i=B01GBT9N0G&pd_rd_r=15TR9JVFMFPMCEHXHHH6&pd_rd_w=B8GTL&pd_rd_wg=rihfR&psc=1&refRID=15TR9JVFMFPMCEHXHHH6)|We had to buy a 10-pack.|
+|2.5mm Panel Mount Female Audio Jack|1|$2|$2|[Amazon](https://www.amazon.com/gp/product/B01N7CJ6JN/ref=oh_aui_detailpage_o05_s00?ie=UTF8&psc=1)|We had to buy a 10-pack.|
+|2.5mm Male Audio Jack|2|$1|$2|[Amazon](https://www.amazon.com/gp/product/B00MFRZ2SG/ref=oh_aui_detailpage_o01_s00?ie=UTF8&psc=1)|We had to buy a 10-pack.
 |10-Gauge Armature Wire|1|$10|$10|[Amazon](https://www.amazon.com/Jack-Richeson-400340-10-Gauge-Armature/dp/B00251E57G/ref=sr_1_4?ie=UTF8&qid=1506479518&sr=8-4&keywords=armature+wire)||
-|USB Microphone|1|$15|$15|[Amazon](https://www.amazon.com/Kinobo-Microphone-Desktops-Dictation-Software/dp/B00NSOWWIS/ref=pd_sim_147_2?_encoding=UTF8&pd_rd_i=B00NSOWWIS&pd_rd_r=MD9SG6M7PMETYHW0QE32&pd_rd_w=crwiO&pd_rd_wg=x7LeI&psc=1&refRID=MD9SG6M7PMETYHW0QE32)|We used a USB microphone after having a lot of trouble with sound quality using the onboard audio.  YMMV.|
 |8" Frosted White Globe|1|$9|$9|[Amazon](https://www.amazon.com/WESTINGHOUSE-LIGHTING-CORP-85571-Globe/dp/B000LNO62O/ref=sr_1_5?ie=UTF8&qid=1506480338&sr=8-5&keywords=lamp+globe)||
-|Total| | |$157|||
+|**Total**| | |**$169**|||
+
+If we were to do again, we'd probably switch the LEDs for something cheaper, such cutting up a cheap addressable RGB LED strip.
 
 ## Build Notes
 
 * Ought to include a speaker and maybe an external audio jack.  You can turn this into an Alexa, Mycroft, Google or other digital assistant, and more.
+
+## Acknowledgements
+
+Thanks to the following projects that made this one possible:
+* Snowboy by KITT.AI:  https://snowboy.kitt.ai/
