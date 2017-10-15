@@ -120,6 +120,8 @@ Printing notes:
     The LEDs should light up, and you should be able to use voice commands like:
     
         "Snowboy, switch to Rainbow."
+        
+If you plan to customize the software, 
 
 ## Bill of Materials
 

@@ -1,14 +1,14 @@
 $fn = 200;
 
 screw_width = 2.5;
-BARREL_JACK_DIAMETER = 6;
+BARREL_JACK_DIAMETER = 11;
 AUDIO_JACK_DIAMETER = 6.1;
 GLOBE_BASE_DIAMETER = 98.5;
 ARMATURE_WIRE_DIAMETER = 3.6;
 
 //exploded();
-//case();
-nucleus();
+case();
+//nucleus();
 
 module exploded() {
     gap = 15;
