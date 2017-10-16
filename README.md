@@ -29,16 +29,17 @@ Printing notes:
 
 If you're printing as you assemble, start with the mounts.
 
-<img src="cad/wiring_diagram.png"/>
-
 1. Create a continuous strand with the RGB LEDs, soldering 3" of wire between each of the LEDs.  Solder a long 12" at the end to connect to power and the fade candy.
 1. Attach a mount to each RGB LED and attach it to the nucleus with a ~2" (depending on the size of your globe) piece of armature wire.  
    * You want the LED to sit about 1/2" from the edge of the globe, to give room for the colors to blend without blurring completely into each other.
-1. At this point, I recommend doing a dry run of all the electronics.  We encountered one dead LED module that we had to replace.
-    1. Attach the armatures with LEDs to the nucleus part.  You want everything to friction fit, since the entire assembly will be too small for the opening of the globe and later you'll be assembling inside the globe.  We ended up gluing the LEDs to the mounts and the mounts to the armature with a bit of CA glue.  _Do not_ glue the stems into the nucleus.  Consider re-printing the nucleus to get a tighter fit if needed.
-    1. Connect the data and ground wires of the LED strand to the Fadecandy.
-    1. Connect the Fadecandy to the Pi with USB.
-    1. Setup software and check that everything is good to go.
+
+<img src="cad/wiring_diagram.png"/>
+
+At this point, I recommend doing a dry run of all the electronics.  We encountered one dead LED module that we had to replace.
+1. Attach the armatures with LEDs to the nucleus part.  You want everything to friction fit, since the entire assembly will be too small for the opening of the globe and later you'll be assembling inside the globe.  We ended up gluing the LEDs to the mounts and the mounts to the armature with a bit of CA glue.  _Do not_ glue the stems into the nucleus.  Consider re-printing the nucleus to get a tighter fit if needed.
+1. Connect the data and ground wires of the LED strand to the Fadecandy.
+1. Connect the Fadecandy to the Pi with USB.
+1. Setup software and check that everything is good to go.
 
 ## Installing the Software
 
