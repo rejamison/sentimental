@@ -2,7 +2,7 @@
 
 This is an LED globe with mic and speaker output built by Caleb and Robert Jamison.
 
-<img src="cad/hero.jpg" />
+<img src="cad/hero.jpg" width="50%" />
 
 ## 3D Printing
 
