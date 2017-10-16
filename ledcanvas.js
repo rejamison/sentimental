@@ -42,8 +42,10 @@ LEDCanvas.prototype.initialize = function() {
     this.animations.Fireworks = new Fireworks();
     this.animations.Off = new Off();
 
-    this.animation = this.animations.Random;
-    this.animation.initialize(this);
+    if(!this.animation) {
+        this.animation = this.animations.Random;
+        this.animation.initialize(this);
+    }
 };
 LEDCanvas.prototype.switchToAnimation = function (animationName) {
     if(animationName in this.animations) {
