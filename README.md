@@ -32,15 +32,52 @@ If you're printing as you assemble, start with the mounts.
 1. Create a continuous strand with the RGB LEDs, soldering 3" of wire between each of the LEDs.  Solder a long 12" at the end to connect to power and the fade candy.
 1. Attach a mount to each RGB LED and attach it to the nucleus with a ~2" (depending on the size of your globe) piece of armature wire.  
    * You want the LED to sit about 1/2" from the edge of the globe, to give room for the colors to blend without blurring completely into each other.
+1. Attach the armatures with LEDs to the nucleus part.  As you wind the LEDs around the nucleus, put the first LED in the top.  Then wind down, being sure to start each row in the same column.
+    * We ended up gluing the LEDs to the mounts and the mounts to the armature with a bit of CA glue.  
+    * _Do not_ glue the stems into the nucleus.  Consider re-printing the nucleus to get a tighter fit if needed.  The entire assembly will be too small for the opening of the globe and later you'll be assembling inside the globe.  
 
-At this point, I recommend doing a dry run of all the electronics.  We encountered one dead LED module that we had to replace.
+At this point, we recommend doing a dry run of all the electronics.
 
 <img src="cad/wiring_diagram.png"/>
 
-1. Attach the armatures with LEDs to the nucleus part.  You want everything to friction fit, since the entire assembly will be too small for the opening of the globe and later you'll be assembling inside the globe.  We ended up gluing the LEDs to the mounts and the mounts to the armature with a bit of CA glue.  _Do not_ glue the stems into the nucleus.  Consider re-printing the nucleus to get a tighter fit if needed.
-1. Connect the data and ground wires of the LED strand to the Fadecandy.
+1. Wiring.  We used breadboard wire throughout to make things easy to connect/disconnect and scavenge in the future.  You'll be connecting a lot of stuff to power and ground, so:
+   1.  Wire the ground side of the 5.5mm surface mount panel jack to 4 female cable ends:
+       1. Pi.
+       1. FadeCandy.
+       1. LED strand.
+       1. Electret mic - GND
+       1. USB Audio in.
+   1.  Wire the +5V side of the barrel jack to 4 female cable ends:
+       1. Pi
+       1. LED strand.
+       1. Electret mic - Vdd.
+       1. Electret mic - Gain.
+1. LED strand:
+   * Connect the data wire to the Fadecandy.
+   * Connect the ground wire to the barrel jack.
+   * Connect the +5V wire to the barrel jack.
+1. Pi:
+   * Connect pin 4 (+5V) to the barrel jack.
+   * Connect pin 6 (GND) to the barrel jack.
 1. Connect the Fadecandy to the Pi with USB.
-1. Setup software and check that everything is good to go.
+1. Plug the USB Sound Card into the Pi.
+1. Electret mic:
+   * Connect `GND` to the barrel jack.
+   * Conenct `Vdd` and `Gain` to +5V on the barrel jack.
+   * Make a 3.5mm audio jack patch cable:
+     * Splice the Left and Right connectors of the 3.5mm male adaptor (our mic is mono...).  Connect this to the positive end of a 1-100uF capacitor (to protect the sound card from any voltage bias) and the negative end of the capacitor to `Out` on the electret mic.
+     * Splice a wire to the ground of the male adaptor which we can connect directly to the common going to the barrel jack.
+   * Connect the patch cable to the mic port of the USB Sound Card.
+1. Create a patch cable to the exterior audio jack by connecting the Left, Right and Ground of a male 3.5mm audio jack to the female panel mount audio jack.  Plug the male end into the USB Sound Card.
+1. Setup software (below) and test using a pair of headphones.
+1. Once you're confident everything is working, start putting the parts together in the case wiring them in as you go, from bottom to top:
+   1. Put in the barrel jack surface mount.
+   1. Put in the audio jack surface mount.
+   1. Put in the Pi, screwing it in with 2.5mm screws.
+   1. Put in the Fadecandy, snapping it into the mount.
+   1. Connect the Fadecandy (with the left-angle extension cable if needed).
+   1. Connect the USB mic (with the left-angle extension cable if needed).
+   1. Put the Electret mic into the slot at the top of the case above the Pi.  The slot is intentionaly tight so that it friction fits, but you might still need a dab of non-conductive CA glue.
 
 ## Installing the Software
 
@@ -168,6 +205,8 @@ At this point, I recommend doing a dry run of all the electronics.  We encounter
 |Lots of Wire|
 |CA Glue|
 |Heat-Shrink Wire Wrap and Heat Gun (Optional)|
+|1-100uF Capacitor|
+|2.5mm screws|
 |Matte Clear-Coat (Optional)|
 
 |Item|Count|Unit Price|Total|Link|Notes|
