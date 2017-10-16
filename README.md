@@ -230,7 +230,7 @@ If we were to do again, we'd probably switch the LEDs for something cheaper, suc
 
 ## Build Notes
 
-* Ought to include a speaker and maybe an external audio jack.  You can turn this into an Alexa, Mycroft, Google or other digital assistant, and more.
+* You could easily turn this into an Alexa, Mycroft, Google or other digital assistant.
 
 ## Acknowledgements
 
