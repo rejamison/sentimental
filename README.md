@@ -29,7 +29,7 @@ Printing notes:
 
 If you're printing as you assemble, start with the mounts.
 
-<img src="cad/wiring_diagram.png" align="right" width="60%"/>
+<img src="cad/wiring_diagram.png"/>
 
 1. Create a continuous strand with the RGB LEDs, soldering 3" of wire between each of the LEDs.  Solder a long 12" at the end to connect to power and the fade candy.
 1. Attach a mount to each RGB LED and attach it to the nucleus with a ~2" (depending on the size of your globe) piece of armature wire.  
