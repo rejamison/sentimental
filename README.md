@@ -1,5 +1,9 @@
 # sentimental
 
+This is an LED globe with mic and speaker output built by Caleb and Robert Jamison.
+
+<img src="cad/hero.jpg" />
+
 ## 3D Printing
 
 |Part|Count|Material|Print Time|
