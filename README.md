@@ -4,9 +4,9 @@
 
 |Part|Count|Material|Print Time|
 |---|---|---|---|
-|[sentimental_base.stl](cad/sentimental_base.stl)|x1|20g|2 hours|
-|[sentimental_nucleus.stl](cad/sentimental_nucleus.stl)|x1|30g|6 hours|
 |[sentimental_mounts.stl](cad/sentimental_mounts.stl)|x25|10g|2 hours|
+|[sentimental_nucleus.stl](cad/sentimental_nucleus.stl)|x1|30g|6 hours|
+|[sentimental_base.stl](cad/sentimental_base.stl)|x1|20g|2 hours|
 |[sentimental_case.stl](cad/sentimental_case.stl)|x1|100g|15 hours|
 |**Total**| |**160g**|**25 hours**|
 
@@ -16,7 +16,7 @@ Printing notes:
 * Printed on my Ultimaker 2 printer using white Polymaker Polymax PLA.
 * No supports are required.
 * Printed with 50% infill and brim to avoid warping.
-* The case has a very large surface area touching the build plate.  Take appropriate measures (glue stick, painters tape, etc.)so that you can get it off.
+* The case has a very large surface area touching the build plate.  Take appropriate measures (glue stick, painters tape, etc.)so that you can get it off.  You might also want to use a brim to avoid warping depending on your material.
 * The case is optional if you have another Pi case and don't mind the wires.
 * If you're careful, you can get everything to friction fit, but it depends on the tolerance of your printer and the specific parts you're using.  Before printing, you should check measurements for:
     * barrel jack port (6mm)
@@ -26,6 +26,19 @@ Printing notes:
 * If anything measures out differently, then use OpenSCAD to adjust the models.
 
 ## Assembly
+
+<img src="cad/wiring_diagram.png" align="right" width="40%" />
+
+If you're printing as you assemble, start with the mounts.
+
+1. Create a continuous strand with the RGB LEDs, soldering 3" of wire between each of the LEDs.  Solder a long 12" at the end to connect to power and the fade candy.
+1. Attach a mount to each RGB LED and attach it to the nucleus with a ~2" (depending on the size of your globe) piece of armature wire.  
+   * You want the LED to sit about 1/2" from the edge of the globe, to give room for the colors to blend without blurring completely into each other.
+1. At this point, I recommend doing a dry run of all the electronics.  We encountered one dead LED module that we had to replace.
+    1. Attach the armatures with LEDs to the nucleus part.  You want everything to friction fit, since the entire assembly will be too small for the opening of the globe and later you'll be assembling inside the globe.  We ended up gluing the LEDs to the mounts and the mounts to the armature with a bit of CA glue.  _Do not_ glue the stems into the nucleus.  Consider re-printing the nucleus to get a tighter fit if needed.
+    1. Connect the data and ground wires of the LED strand to the Fadecandy.
+    1. Connect the Fadecandy to the Pi with USB.
+    1. Setup software and check that everything is good to go.
 
 ## Installing the Software
 
@@ -98,10 +111,32 @@ Printing notes:
 1.  Install the Sentimental project:
 
     ````bash
+    cd /home/pi
     git clone git@github.com:rejamison/sentimental.git
     cd sentimental
     npm install
     ````
+    
+1. Configure FadeCandy server to run on startup:
+
+    ````bash
+    cd /home/pi
+    git clone https://github.com/scanlime/fadecandy
+    ````
+    
+    Add the following to `/etc/rc.local`, which will start the server using the config inside the sentimental project:
+    
+    ````bash
+    /home/pi/fadecandy/bin/fcserver-rpi /home/pi/sentimental/fcserver.conf > /var/log/fcserver.log 2>&1 &
+    ````
+
+    Reboot the Pi:
+    
+    ````bash
+    sudo reboot
+    ````
+    
+    Once it's back, check that `fcserver` is running by visiting `http://sentimental.local:7890/` from another machine on your network.  You should see a webpage showing your configuration and gives you a few options to show test patterns.
     
 1.  Install AWS CLI and configure account keys.
 
@@ -114,14 +149,13 @@ Printing notes:
 1.  Run the Project
 
     ````bash
+    cd /home/pi/sentimental
     node index.js
     ````
     
     The LEDs should light up, and you should be able to use voice commands like:
     
-        "Snowboy, switch to Rainbow."
-        
-If you plan to customize the software, 
+        "Snowboy, switch to Rotating Rainbow."
 
 ## Bill of Materials
 

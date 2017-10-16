@@ -4,6 +4,7 @@ const snowboy = require('snowboy');
 const Stream = require('stream');
 const AWS = require('aws-sdk');
 const log = require('winston');
+const os = require('os');
 
 log.level = 'debug';
 
@@ -51,11 +52,6 @@ VoiceEngine.prototype.start = function () {
         sensitivity: '0.5',
         hotwords: 'snowboy'
     });
-    this.models.add({
-        file: 'res/alexa.umdl',
-        sensitivity: '0.5',
-        hotwords: 'alexa'
-    });
 
     this.detector = new snowboy.Detector({
         resource: "res/common.res",
@@ -71,7 +67,7 @@ VoiceEngine.prototype.start = function () {
 
     this.mic = record.start({
         threshold: 0,
-        recordProgram: 'arecord',
+        recordProgram: (os.platform() === 'darwin' ? 'rec' : 'arecord'),
         verbose: false
     });
 
@@ -152,18 +148,7 @@ VoiceEngine.prototype.onError = function(err) {
 VoiceEngine.prototype.finalizeUtterance = function() {
     log.debug('done listening after ' + this.lastHotword);
 
-    if(this.lastHotword === 'alexa') {
-        // var utteranceBuffer = Buffer.concat(this.utteranceBuffers);
-        // var speaker = new Speaker({
-        //     channels: 1,
-        //     bitDepth: 16,
-        //     sampleRate: 16000,
-        //     signed: true
-        // });
-        // var stream = new Stream.PassThrough();
-        // stream.end(utteranceBuffer);
-        // stream.pipe(speaker);
-    } else if(this.lastHotword === 'snowboy') {
+    if(this.lastHotword === 'snowboy') {
         this.readStream.push(null);
     }
 
